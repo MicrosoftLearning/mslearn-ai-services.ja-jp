@@ -1,2 +1,2 @@
-# mslearn-ai-services.ja-jp
-Japanese repo
+# mslearn-ai-services
+Azure AI サービス モジュールのラボ ファイル
