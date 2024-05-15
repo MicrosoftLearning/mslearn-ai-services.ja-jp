@@ -2,9 +2,7 @@
 lab:
   title: Visual Studio Code ノートブックで AI Personalizer を使用してループをシミュレートする
 ---
-> **重要** 2023 年秋の時点で、新しい Personalizer リソースは作成できなくなりました。
-
-> **注**: この演習を完了するには、[Azure サブスクリプション](https://azure.microsoft.com/free?azure-portal=true)が必要です。
+> **重要** 2023 年秋の時点で、新しい Personalizer リソースは作成できなくなりました。 このリポジトリは、Personalizer リソースが既にある場合にのみ参照として使用してください。
 
 この演習では、Visual Studio Code で Azure AI Personalizer とノートブックを使用して、学習ループをシミュレートします。
 
