@@ -43,13 +43,16 @@ C# と Python の両方のコードが用意されています。 目的の言�
 
 ## 認証キーの管理
 
-Azure AI サービス リソースを作成したときに、2 つの認証キーが生成されました。 これらは、Azure portal で、または Azure コマンド ライン インターフェイス (CLI) を使用して管理できます。
+Azure AI サービス リソースを作成したときに、2 つの認証キーが生成されました。 これらは、Azure portal で、または Azure コマンド ライン インターフェイス (CLI) を使用して管理できます。 
 
-1. Azure portal で Azure AI サービス リソースに移動し、その **[キーとエンドポイント]** ページを表示します。 このページには、リソースに接続して、開発したアプリケーションからリソースを使用するために必要な情報が含まれています。 具体的な内容は次のとおりです。
+1. 認証キーとエンドポイントを取得する方法を 1 つ選択します。 
+
+    **Azure portal の使用**: Azure portal で Azure AI サービス リソースに移動し、その **[キーとエンドポイント]** ページを表示します。 このページには、リソースに接続して、開発したアプリケーションからリソースを使用するために必要な情報が含まれています。 具体的な内容は次のとおりです。
     - クライアント アプリケーションが要求を送信できる HTTP *エンドポイント*。
     - 認証に使用できる 2 つの *キー* (クライアント アプリケーションはどちらのキーも使用できます。 一般的な方法は、1 つを開発用に、もう 1 つを本番用に使用する方法です。 開発者が作業を終了した後、開発キーを簡単に再生成して、継続的なアクセスを防ぐことができます)。
     - リソースがホストされている *場所*。 これは、一部の (すべてではない) API へのリクエストに必要です。
-2. これで、次のコマンドを使用して、Azure AI サービス キーのリストを取得できます。*&lt;resourceName&gt;* を Azure AI サービス リソースの名前に置き換え、*&lt;resourceGroup&gt;* を作成したリソース グループの名前に置き換えます。
+
+    **コマンド ラインの使用**: または、次のコマンドを使用して、Azure AI サービス キーの一覧を取得できます。 Visual Studio Code で、新しいターミナルを開きます。 これで、次のコマンドを使用して、*&lt;resourceName&gt;* を Azure AI サービス リソースの名前に置き換え、*&lt;resourceGroup&gt;* を、作成したリソース グループの名前に置き換えます。
 
     ```
     az cognitiveservices account keys list --name <resourceName> --resource-group <resourceGroup>
@@ -57,15 +60,15 @@ Azure AI サービス リソースを作成したときに、2 つの認証キ�
 
     このコマンドは、Azure AI サービス リソースのキーのリストを返します。**key1** と **key2** という名前の 2 つのキーがあります。
 
-    > **ヒント**: Azure CLI をまだ認証していない場合は、`az login` を実行してアカウントにサインインします。
+    > **ヒント**: Azure CLI をまだ認証していない場合は、まず `az login` を実行してアカウントにサインインします。
 
-3. Azure AI サービス をテストするには、HTTP 要求に **curl** コマンド ライン ツールを使用できます。 **02-ai-services-security** フォルダーで **rest-test.cmd** を開き、そこに含まれる **curl** コマンド (以下に表示) を編集し、*&lt;yourEndpoint&gt;* と *&lt;yourKey&gt;* をお使いのエンドポイント URI と **Key1** キーに置き換えて、Azure AI サービス リソースで Analyze Text API を使います。
+2. Azure AI サービス をテストするには、HTTP 要求に **curl** コマンド ライン ツールを使用できます。 **02-ai-services-security** フォルダーで **rest-test.cmd** を開き、そこに含まれる **curl** コマンド (以下に表示) を編集し、*&lt;yourEndpoint&gt;* と *&lt;yourKey&gt;* をお使いのエンドポイント URI と **Key1** キーに置き換えて、Azure AI サービス リソースで Analyze Text API を使います。
 
     ```bash
-    curl -X POST "<yourEndpoint>/language/:analyze-text?api-version=2023-04-01" -H "Content-Type: application/json" -H "Ocp-Apim-Subscription-Key: 81468b6728294aab99c489664a818197" --data-ascii "{'analysisInput':{'documents':[{'id':1,'text':'hello'}]}, 'kind': 'LanguageDetection'}"
+    curl -X POST "<yourEndpoint>/language/:analyze-text?api-version=2023-04-01" -H "Content-Type: application/json" -H "Ocp-Apim-Subscription-Key: <your-key>" --data-ascii "{'analysisInput':{'documents':[{'id':1,'text':'hello'}]}, 'kind': 'LanguageDetection'}"
     ```
 
-4. 変更を保存し、次のコマンドを実行します。
+3. 変更を保存。 ターミナルで、"02-ai-services-security" フォルダーに移動します。 (**注**: エクスプローラーで "02-ai-services-security" フォルダーを右クリックし、 *統合ターミナルで開く*) を選択すると、これを行うことができます)。 次に、次のコマンドを実行します。
 
     ```
     ./rest-test.cmd
@@ -73,7 +76,7 @@ Azure AI サービス リソースを作成したときに、2 つの認証キ�
 
 このコマンドは、入力データで検出された言語に関する情報を含む JSON ドキュメントを返します (これは英語でなければなりません)。
 
-5. キーが危険にさらされた場合、またはキーを持っている開発者がアクセスを必要としなくなった場合は、ポータルで、または Azure CLI を使用してキーを再生成できます。 次のコマンドを実行して、**key1** キーを再生成します (リソースの *&lt;resourceName&gt;* と *&lt;resourceGroup&gt;* を置き換えます)。
+4. キーが危険にさらされた場合、またはキーを持っている開発者がアクセスを必要としなくなった場合は、ポータルで、または Azure CLI を使用してキーを再生成できます。 次のコマンドを実行して、**key1** キーを再生成します (リソースの *&lt;resourceName&gt;* と *&lt;resourceGroup&gt;* を置き換えます)。
 
     ```
     az cognitiveservices account keys regenerate --name <resourceName> --resource-group <resourceGroup> --key-name key1
@@ -81,8 +84,8 @@ Azure AI サービス リソースを作成したときに、2 つの認証キ�
 
 Azure AI サービス リソースのキーのリストが返されます。**key1** は前回取得したときから変更されていることに注意してください。
 
-6. 古いキーを使って **rest-test** コマンドを再実行し (キーボードの **^** 方向キーを使って前のコマンドを切り替えることができます)、失敗することを確認します。
-7. **rest-test.cmd** の *curl* コマンドを編集して、キーを新しい **key1** 値に置き換え、変更を保存します。 次に、**rest-test** コマンドを再実行し、成功することを確認します。
+5. 古いキーを使って **rest-test** コマンドを再実行し (キーボードの **^** 方向キーを使って前のコマンドを切り替えることができます)、失敗することを確認します。
+6. **rest-test.cmd** の *curl* コマンドを編集して、キーを新しい **key1** 値に置き換え、変更を保存します。 次に、**rest-test** コマンドを再実行し、成功することを確認します。
 
 > **ヒント**: この演習では、 **--resource-group** などの Azure CLI パラメーターのフルネームを使用しました。  **-g** などの短い代替手段を使用して、コマンドの冗長性を低くすることもできます (ただし、理解が少し難しくなります)。  [Azure AI サービス CLI コマンド リファレンス](https://docs.microsoft.com/cli/azure/cognitiveservices?view=azure-cli-latest)には、各 Azure AI サービス CLI コマンドのパラメーター オプションがリストされています。
 
@@ -113,7 +116,7 @@ Azure AI サービス リソースのキーのリストが返されます。**ke
 5. **[+生成/インポート]** を選択し、次の設定で新しいシークレットを追加します。
     - **アップロード オプション**: 手動
     - **[名前]**: AI-Services-Key (後でこの名前に基づいてシークレットを取得するコードを実行するため、これを正確に一致させることが重要です)**
-    - **値**: *自分の **key1** Azure AI サービス キー*
+    - **シークレット値**: *自分の **key1** Azure AI サービス キー*
 6. **［作成］** を選択します
 
 ### サービス プリンシパルの作成
@@ -167,16 +170,16 @@ Key Vault 内のシークレットにアクセスするには、アプリケー�
 
     ```
     dotnet add package Azure.AI.TextAnalytics --version 5.3.0
-    dotnet add package Azure.Identity --version 1.5.0
-    dotnet add package Azure.Security.KeyVault.Secrets --version 4.2.0-beta.3
+    dotnet add package Azure.Identity --version 1.12.0
+    dotnet add package Azure.Security.KeyVault.Secrets --version 4.6.0
     ```
 
     **Python**
 
     ```
     pip install azure-ai-textanalytics==5.3.0
-    pip install azure-identity==1.5.0
-    pip install azure-keyvault-secrets==4.2.0
+    pip install azure-identity==1.17.1
+    pip install azure-keyvault-secrets==4.8.0
     ```
 
 3. **keyvault-client** フォルダーの内容を表示し、構成設定用のファイルが含まれていることに注意してください
