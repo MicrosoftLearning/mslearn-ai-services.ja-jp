@@ -10,7 +10,7 @@ lab:
 
 ## Visual Studio Code でリポジトリをクローンする
 
-Visual Studio Code を使ってコードを開発します。 アプリのコード ファイルは、GitHub リポジトリで提供されています。
+Visual Studio Code を使用してコードを開発します。 アプリのコード ファイルは、GitHub リポジトリで提供されています。
 
 > **ヒント**: 既に **mslearn-ai-services** リポジトリをクローンしている場合は、Visual Studio Code で開きます。 それ以外の場合は、次の手順に従って開発環境に複製します。
 
