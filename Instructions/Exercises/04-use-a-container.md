@@ -42,9 +42,9 @@ Visual Studio Code を使用してコードを開発します。 アプリのコ
 4. デプロイが完了するまで待ち、デプロイの詳細を表示します。
 5. リソースがデプロイされたら、そこに移動して、その **[キーとエンドポイント]** ページを表示します。 次の手順では、このページのエンドポイントとキーの 1 つが必要になります。
 
-## Text Analytics コンテナーをデプロイして実行する
+## 感情分析コンテナーをデプロイして実行する
 
-一般的に使用される多くの Azure AI サービス API は、コンテナー イメージで利用できます。 完全なリストについては、「[Azure AI サービスのドキュメント](https://docs.microsoft.com/azure/cognitive-services/cognitive-services-container-support#container-availability-in-azure-cognitive-services)」を確認してください。 この演習では、Text Analytics "*言語検出*" API のコンテナー イメージを使用します。ただし、原則は利用可能なすべての画像で同じです。
+一般的に使用される多くの Azure AI サービス API は、コンテナー イメージで利用できます。 完全なリストについては、「[Azure AI サービスのドキュメント](https://learn.microsoft.com/en-us/azure/ai-services/cognitive-services-container-support#containers-in-azure-ai-services)」を確認してください。 この演習では、Text Analytics *感情分析* API のコンテナー イメージを使用します。ただし、原則は利用可能なすべての画像で同じです。
 
 1. Azure portal の **ホーム** ページで、 **[&#65291;リソースの作成]** ボタンを選択し、*Container Instances* を検索して、次の設定で **Container Instances** リソースを作成します。
 
@@ -53,11 +53,13 @@ Visual Studio Code を使用してコードを開発します。 アプリのコ
         - **リソース グループ**: *Azure AI サービス リソースを含むリソース グループを選択する*
         - **コンピューティング名**: "*一意の名前を入力します*"
         - **[リージョン]**: 使用できるリージョンを選択します**
+        - **可用性ゾーン**: なし
+        - **SKU**: Standard
         - **イメージのソース**:その他のレジストリ
         - **イメージの種類**: パブリック
-        - **イメージ**: `mcr.microsoft.com/azure-cognitive-services/textanalytics/language:latest`
+        - **イメージ**: `mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment:latest`
         - **OS の種類**: Linux
-        - **サイズ**: 1 vCPU、12 GB メモリ
+        - **サイズ**: 1 vCPU、8 GB メモリ
     - **[ネットワーク]**:
         - **ネットワークの種類**: パブリック
         - **DNS 名ラベル**: "*コンテナー エンドポイントの一意の名前を入力します*"
@@ -73,6 +75,7 @@ Visual Studio Code を使用してコードを開発します。 アプリのコ
             | いいえ | `Eula` | `accept` |
 
         - **コマンドのオーバーライド**: [ ]
+        - **キー管理**: Microsoft マネージド キー (MMK)
     - **タグ**:
         - "*タグを追加しないでください*"
 
@@ -83,11 +86,11 @@ Visual Studio Code を使用してコードを開発します。 アプリのコ
     - **IP アドレス**: これは、コンテナー インスタンスへのアクセスに使用できるパブリック IP アドレスです。
     - **FQDN**: これはコンテナー インスタンス リソースの "*完全修飾ドメイン名*" です。これを使用して、IP アドレスの代わりにコンテナー インスタンスにアクセスできます。
 
-    > **注**: この演習では、テキストを翻訳するための Azure AI サービス コンテナー イメージを Azure Container Instances (ACI) リソースにデプロイしました。 同様のアプローチを使用して、次のコマンド (1 行) を実行して言語検出コンテナーをローカルの Docker インスタンスにデプロイすることにより、ご自分のコンピューターまたはネットワーク上の *[Docker](https://www.docker.com/products/docker-desktop)* ホストにデプロイして、*&lt;yourEndpoint&gt;* と *&lt;yourKey&gt;* をエンドポイント URI と Azure AI サービス リソースのいずれかのキーに置き換えます。
+    > **注**: この演習では、感情を分析するための Azure AI サービス コンテナー イメージを Azure Container Instances (ACI) リソースにデプロイしました。 同様のアプローチを使用して、次のコマンド (1 行) を実行して感情分析コンテナーをローカルの Docker インスタンスにデプロイすることにより、ご自分のコンピューターまたはネットワーク上の *[Docker](https://www.docker.com/products/docker-desktop)* ホストにデプロイして、*&lt;yourEndpoint&gt;* と *&lt;yourKey&gt;* をエンドポイント URI と Azure AI サービス リソースのいずれかのキーに置き換えます。
     > このコマンドはローカル マシン上の画像を検索しますが見つからない場合は、*mcr.microsoft.com* イメージ レジストリからプルされ、Docker インスタンスにデプロイされます。 デプロイが完了すると、コンテナーが起動し、ポート 5000 で着信要求をリッスンします。
 
     ```
-    docker run --rm -it -p 5000:5000 --memory 12g --cpus 1 mcr.microsoft.com/azure-cognitive-services/textanalytics/language:latest Eula=accept Billing=<yourEndpoint> ApiKey=<yourKey>
+    docker run --rm -it -p 5000:5000 --memory 8g --cpus 1 mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment:latest Eula=accept Billing=<yourEndpoint> ApiKey=<yourKey>
     ```
 
 ## コンテナーを使用する
@@ -95,7 +98,7 @@ Visual Studio Code を使用してコードを開発します。 アプリのコ
 1. エディターで **rest-test.cmd** を開き、それに含まれる **curl** コマンドを編集し (以下を参照)、*&lt;your_ACI_IP_address_or_FQDN&gt;* を実際のコンテナーの IP アドレスまたは FQDN に置き換えます。
 
     ```
-    curl -X POST "http://<your_ACI_IP_address_or_FQDN>:5000/text/analytics/v3.0/languages" -H "Content-Type: application/json" --data-ascii "{'documents':[{'id':1,'text':'Hello world.'},{'id':2,'text':'Salut tout le monde.'}]}"
+    curl -X POST "http://<your_ACI_IP_address_or_FQDN>:5000/text/analytics/v3.1/sentiment" -H "Content-Type: application/json" --data-ascii "{'documents':[{'id':1,'text':'The performance was amazing! The sound could have been clearer.'},{'id':2,'text':'The food and service were unacceptable. While the host was nice, the waiter was rude and food was cold.'}]}"
     ```
 
 2. **Ctrl+S** キーを押して、スクリプトに対する変更を保存します。 Azure AI サービスのエンドポイントまたはキーを指定する必要はないことに注意してください。要求はコンテナー化されたサービスによって処理されます。 次に、コンテナーは Azure のサービスと定期的に通信して、請求の使用状況を報告しますが、要求データは送信しません。
@@ -105,9 +108,9 @@ Visual Studio Code を使用してコードを開発します。 アプリのコ
     ./rest-test.cmd
     ```
 
-4. コマンドが 2 つの入力ドキュメント (英語とフランス語である必要があります) で検出された言語に関する情報を含む JSON ドキュメントを返すことを確認します。
+4. コマンドが 2 つの入力ドキュメント (肯定的および否定的なものがその順序である必要があります) で検出された感情に関する情報を含む JSON ドキュメントを返すことを確認します。
 
-## クリーンアップする
+## クリーンアップ
 
 Container Instances の実験が終了したら、それを削除する必要があります。
 
