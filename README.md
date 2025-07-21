@@ -1,4 +1,6 @@
-# Azure で生成 AI ソリューションを開発する
+# Azure で AI ソリューションを開発する
+
+> **注**:このリポジトリはアーカイブされており、メンテナンスされなくなりました。 [生成 AI アプリ](https://learn.microsoft.com/en-us/training/paths/create-custom-copilots-ai-studio/)のラーニング パスと[関連するラボ リポジトリ](https://github.com/MicrosoftLearning/mslearn-ai-studio)、または [Azure AI Foundry ドキュメント](https://learn.microsoft.com/en-us/azure/ai-foundry/)を参照してください。
 
 このリポジトリの演習は、Microsoft Azure で生成 AI ソリューションを構築するときに開発者が実行する一般的なタスクについて調べる、実践的な学習エクスペリエンスを提供するように設計されています。
 

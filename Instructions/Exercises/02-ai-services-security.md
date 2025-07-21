@@ -97,6 +97,9 @@ Azure AI サービス リソースのキーのリストが返されます。**ke
 
 最初に、キー コンテナ―を作成して Azure AI サービス キーの*シークレット*を追加する必要があります。
 
+キー コンテナーを作成してシークレットを追加する方法のいずれかを選択します。
+
+#### Azure Portal の使用
 1. Azure AI サービス リソースの **key1** 値をメモします (またはクリップボードにコピーします)。
 2. Azure portal の **[ホーム]** ページで、 **[&#65291; リソースの作成]** ボタンを選択し、*Key Vault* を検索して、次の設定で **Key Vault** リソースを作成します。
 
@@ -118,6 +121,33 @@ Azure AI サービス リソースのキーのリストが返されます。**ke
     - **[名前]**: AI-Services-Key (後でこの名前に基づいてシークレットを取得するコードを実行するため、これを正確に一致させることが重要です)**
     - **シークレット値**: *自分の **key1** Azure AI サービス キー*
 6. **［作成］** を選択します
+
+#### Azure CLI の使用
+または、Azure CLI を使用してキー コンテナーを作成し、シークレットを追加することもできます。
+
+1. Visual Studio Code でターミナルを開きます。
+2. 次のコマンドを実行して Key Vault を作成します。その際に、`<keyVaultName>`、`<resourceGroup>`、`<location>` を、目的のキー コンテナー名、リソース グループ名、Azure リージョン (たとえば、`eastus`) に置き換えます。
+
+    ```
+    az keyvault create \
+      --name <key-vault-name> \
+      --resource-group <resource-group-name> \
+      --location <region> \
+      --sku standard \
+      --enable-rbac-authorization false
+    ```
+    フラグ `--enable-rbac-authorization false` を指定すると、アクセス許可モデルは "コンテナー アクセス ポリシー" (既定値) に設定されます。
+
+3. Azure AI サービス キーをシークレットとしてキー コンテナーに追加します。 `<keyVaultName>` をキー コンテナー名に、`<your-key1-value>` を Azure AI サービス key1 の値に置き換えます。
+
+    ```
+    az keyvault secret set \
+    --vault-name <key-vault-name> \
+    --name AI-Services-Key \
+    --value <your-azure-ai-services-key>
+    ```
+
+これで、キー コンテナーが作成され、Azure AI サービス キーが `AI-Services-Key` というシークレットとして保存されました。
 
 ### サービス プリンシパルの作成
 
